@@ -18,7 +18,7 @@ impl Component for App {
     fn render(&self) -> VNode {
         let show_sub_component = use_state(|| false);
 
-        let value = show_sub_component.value();
+        let value = *show_sub_component.value();
 
         (
             h!(button)
@@ -29,8 +29,11 @@ impl Component for App {
                         show_sub_component.set(|show_sub_component| !show_sub_component);
                     }
                 }))
-                .build("Toggle sub component"),
-            match *value {
+                .build(match value {
+                    false => "Mount component with raf loop",
+                    true => "Unmount component with raf loop",
+                }),
+            match value {
                 true => SubComponent {}.build(),
                 false => ().into(),
             },
